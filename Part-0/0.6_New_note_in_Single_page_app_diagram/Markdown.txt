@@ -1,0 +1,10 @@
+participant user
+participant browser
+participant server
+
+user ->> browser: note
+client-side JS: process note to JSON
+browser ->> server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+activate server
+server: save data
+deactivate server 
