@@ -27,3 +27,8 @@ server ->> browser: data.json
 deactivate server
 browser: render content
 
+browser ->> server: GET https://studies.cs.helsinki.fi/favicon.ico
+activate server 
+server ->> browser: HTML
+deactivate server
+
