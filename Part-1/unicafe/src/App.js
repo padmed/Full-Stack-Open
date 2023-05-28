@@ -10,10 +10,8 @@ const Statistics = ({ stats }) => {
   let average = (stats.bad * -1 + stats.good) / total;
 
   if (total === 0) {
-    average = 0;
-    pstvPerc = 0;
+    return <p> No feedback given</p>;
   }
-
   return (
     <div>
       <p>good: {stats.good}</p>
