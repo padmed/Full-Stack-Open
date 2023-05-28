@@ -4,23 +4,34 @@ const Button = ({ label, handleStat }) => (
   <button onClick={handleStat}>{label}</button>
 );
 
+const StatisticLine = ({ text, value }) => {
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
+  );
+};
 const Statistics = ({ stats }) => {
   const total = stats.good + stats.neutral + stats.bad;
-  let pstvPerc = (stats.good / total) * 100;
+  let pstvPerc = (stats.good / total) * 100 + " %";
   let average = (stats.bad * -1 + stats.good) / total;
 
   if (total === 0) {
     return <p> No feedback given</p>;
   }
+
   return (
-    <div>
-      <p>good: {stats.good}</p>
-      <p>neutral: {stats.neutral}</p>
-      <p>bad: {stats.bad}</p>
-      <p>all: {total}</p>
-      <p>average: {average}</p>
-      <p>positive: {pstvPerc} %</p>
-    </div>
+    <table>
+      <tbody>
+        <StatisticLine text="good" value={stats.good} />
+        <StatisticLine text="neutral" value={stats.neutral} />
+        <StatisticLine text="bad" value={stats.bad} />
+        <StatisticLine text="all" value={total} />
+        <StatisticLine text="average" value={average} />
+        <StatisticLine text="positive" value={pstvPerc} />
+      </tbody>
+    </table>
   );
 };
 
