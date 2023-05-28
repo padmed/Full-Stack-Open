@@ -3,8 +3,8 @@ import { useState } from "react";
 const Button = ({ text, handleAnecdote }) => {
   return <button onClick={handleAnecdote}>{text}</button>;
 };
+
 const App = () => {
-  const [selected, setSelected] = useState(0);
   const anecdotes = [
     "If it hurts, do it more often.",
     "Adding manpower to a late software project makes it later!",
@@ -15,15 +15,34 @@ const App = () => {
     "Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.",
     "The only way to go fast, is to go well.",
   ];
+  const [selected, setSelected] = useState(0);
+  const [votes, setVotes] = useState({
+    0: 0,
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+    7: 0,
+  });
 
   const changeAnectode = () => {
     const randomAnectode = Math.floor(Math.random() * anecdotes.length);
     setSelected(randomAnectode);
   };
 
+  const giveVote = () => {
+    const votesCopy = { ...votes };
+    votesCopy[selected] += 1;
+    setVotes(votesCopy);
+  };
+
   return (
     <>
       <div>{anecdotes[selected]}</div>
+      <div>has {votes[selected]} votes</div>
+      <Button text="vote" handleAnecdote={giveVote} />
       <Button text="next anecdote" handleAnecdote={changeAnectode} />
     </>
   );
