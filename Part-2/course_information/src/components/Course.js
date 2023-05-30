@@ -7,11 +7,11 @@ const Part = ({ name, exercises }) => (
 );
 
 const Content = ({ parts }) => {
-  const result = parts.map((part) => (
+  const partComponents = parts.map((part) => (
     <Part key={part.id} name={part.name} exercises={part.exercises} />
   ));
 
-  return <div>{result}</div>;
+  return <div>{partComponents}</div>;
 };
 
 const Sum = ({ parts }) => {
@@ -38,4 +38,12 @@ const Course = ({ course }) => {
   );
 };
 
-export default Course;
+const Courses = ({ courses }) => {
+  const courseComponents = courses.map((course) => {
+    return <Course key={course.id} course={course} />;
+  });
+
+  return <>{courseComponents}</>;
+};
+
+export default Courses;
