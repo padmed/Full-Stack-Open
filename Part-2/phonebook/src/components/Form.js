@@ -1,8 +1,12 @@
-const Form = ({ value, handleSetPersons, handleInputChange }) => (
+const Form = ({ value, handleSetPersons, handleNameInput, handleNumInput }) => (
   <form onSubmit={handleSetPersons}>
-    <div>
-      name: <input value={value} onChange={handleInputChange} />
-    </div>
+    <label>
+      name: <input value={value} onChange={handleNameInput} />
+    </label>
+    <br />
+    <label>
+      number: <input onChange={handleNumInput} />
+    </label>
     <div>
       <button type="submit">add</button>
     </div>
