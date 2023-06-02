@@ -1,24 +1,6 @@
 import { useState } from "react";
-
-const Form = ({ value, handleSetPersons, handleInputChange }) => (
-  <form onSubmit={handleSetPersons}>
-    <div>
-      name: <input value={value} onChange={handleInputChange} />
-    </div>
-    <div>
-      <button type="submit">add</button>
-    </div>
-  </form>
-);
-
-const Number = ({ name }) => <p>{name}</p>;
-const Numbers = ({ persons }) => {
-  const personsToShow = persons.map((person) => {
-    return <Number key={person.name} name={person.name} />;
-  });
-
-  return <div>{personsToShow}</div>;
-};
+import Form from "./components/Form";
+import Numbers from "./components/Numbers";
 
 const App = () => {
   const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
@@ -30,10 +12,16 @@ const App = () => {
 
   const handleSetPersons = (event) => {
     event.preventDefault();
-    const newPersonObject = {
-      name: newName,
-    };
-    setPersons([...persons, newPersonObject]);
+    const checkDuplicates = (person) => person.name !== newName;
+
+    if (persons.every(checkDuplicates)) {
+      const newPersonObject = {
+        name: newName,
+      };
+      setPersons([...persons, newPersonObject]);
+    } else {
+      window.alert(`${newName} is already added to phonebook`);
+    }
   };
 
   return (
