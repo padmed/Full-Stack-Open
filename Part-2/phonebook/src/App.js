@@ -49,6 +49,16 @@ const App = () => {
     return persons.filter(filterNames);
   };
 
+  const removePerson = (id) => {
+    const person = persons.find((x) => x.id === id);
+    const confirmation = window.confirm(`Delete ${person.name}?`);
+
+    if (confirmation)
+      numbers.remove(id).then(() => {
+        setPersons(persons.filter((x) => x.id !== id));
+      });
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -65,7 +75,7 @@ const App = () => {
         handleSetPersons={handleSetPersons}
       />
       <h2>Numbers</h2>
-      <Numbers persons={getFilteredNames()} />
+      <Numbers persons={getFilteredNames()} removePerson={removePerson} />
     </div>
   );
 };
