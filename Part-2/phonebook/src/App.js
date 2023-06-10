@@ -11,7 +11,7 @@ const App = () => {
   const [filterStr, setFilterStr] = useState("");
 
   useEffect(() => {
-    numbers.getAll().then((response) => setPersons(response.data));
+    numbers.getAll().then((initialNums) => setPersons(initialNums));
   }, []);
 
   const handleInputChange = (setState) => (event) => {
@@ -28,8 +28,8 @@ const App = () => {
         number: newNumber,
       };
 
-      numbers.create(newPersonObject).then((response) => {
-        setPersons([...persons, response.data]);
+      numbers.create(newPersonObject).then((newNum) => {
+        setPersons([...persons, newNum]);
       });
 
       setNewName("");
