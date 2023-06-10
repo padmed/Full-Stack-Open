@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Form from "./components/Form";
 import Numbers from "./components/Numbers";
 import Filter from "./components/Filter";
-import axios from "axios";
+import numbers from "./services/phoneNumbers";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,9 +11,7 @@ const App = () => {
   const [filterStr, setFilterStr] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then((response) => setPersons(response.data));
+    numbers.getAll().then((response) => setPersons(response.data));
   }, []);
 
   const handleInputChange = (setState) => (event) => {
@@ -30,7 +28,10 @@ const App = () => {
         number: newNumber,
       };
 
-      setPersons([...persons, newPersonObject]);
+      numbers.create(newPersonObject).then((response) => {
+        setPersons([...persons, response.data]);
+      });
+
       setNewName("");
       setNewNumber("");
     } else {
