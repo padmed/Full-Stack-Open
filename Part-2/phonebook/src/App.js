@@ -3,12 +3,14 @@ import Form from "./components/Form";
 import Numbers from "./components/Numbers";
 import Filter from "./components/Filter";
 import numbers from "./services/phoneNumbers";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filterStr, setFilterStr] = useState("");
+  const [notificationMessage, setnotificationMessage] = useState(null);
 
   useEffect(() => {
     numbers.getAll().then((initialNums) => setPersons(initialNums));
@@ -18,6 +20,13 @@ const App = () => {
     setState(event.target.value);
   };
 
+  const showNotification = (personName) => {
+    setnotificationMessage(`Added ${personName}`);
+    setTimeout(() => {
+      setnotificationMessage(null);
+    }, 2000);
+  };
+
   const replacePerson = (newPersonObject) => {
     const personToReplace = persons.find((x) => x.name === newName);
     const confirmation = window.confirm(
@@ -25,19 +34,19 @@ const App = () => {
     );
 
     if (confirmation)
-      numbers
-        .put(personToReplace.id, newPersonObject)
-        .then((response) =>
-          setPersons([
-            ...persons.filter((x) => x.id !== personToReplace.id),
-            response.data,
-          ])
-        );
+      numbers.put(personToReplace.id, newPersonObject).then((response) => {
+        setPersons([
+          ...persons.filter((x) => x.id !== personToReplace.id),
+          response.data,
+        ]);
+        showNotification(newPersonObject.name);
+      });
   };
 
   const addPersons = (newPersonObject) => {
     numbers.create(newPersonObject).then((newNum) => {
       setPersons([...persons, newNum]);
+      showNotification(newPersonObject.name);
     });
   };
 
@@ -82,6 +91,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
       <Filter
         value={filterStr}
         handleFilterStr={handleInputChange(setFilterStr)}
