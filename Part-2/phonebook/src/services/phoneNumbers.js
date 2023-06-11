@@ -16,8 +16,14 @@ const remove = (id) => {
   return axios.delete(requestURL);
 };
 
+const put = (id, personObj) => {
+  const requestURL = `${baseURL}/${id}`;
+  return axios.put(requestURL, personObj);
+};
+
 export default {
   getAll,
   create,
   remove,
+  put,
 };

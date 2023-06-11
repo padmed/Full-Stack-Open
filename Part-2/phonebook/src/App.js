@@ -18,25 +18,45 @@ const App = () => {
     setState(event.target.value);
   };
 
+  const replacePerson = (newPersonObject) => {
+    const personToReplace = persons.find((x) => x.name === newName);
+    const confirmation = window.confirm(
+      `${newName} is already in a phonebook, replace the old number with the new one?`
+    );
+
+    if (confirmation)
+      numbers
+        .put(personToReplace.id, newPersonObject)
+        .then((response) =>
+          setPersons([
+            ...persons.filter((x) => x.id !== personToReplace.id),
+            response.data,
+          ])
+        );
+  };
+
+  const addPersons = (newPersonObject) => {
+    numbers.create(newPersonObject).then((newNum) => {
+      setPersons([...persons, newNum]);
+    });
+  };
+
   const handleSetPersons = (event) => {
     event.preventDefault();
     const checkDuplicates = (person) => person.name !== newName;
+    const newPersonObject = {
+      name: newName,
+      number: newNumber,
+    };
 
     if (persons.every(checkDuplicates)) {
-      const newPersonObject = {
-        name: newName,
-        number: newNumber,
-      };
-
-      numbers.create(newPersonObject).then((newNum) => {
-        setPersons([...persons, newNum]);
-      });
-
-      setNewName("");
-      setNewNumber("");
+      addPersons(newPersonObject);
     } else {
-      window.alert(`${newName} is already added to phonebook`);
+      replacePerson(newPersonObject);
     }
+
+    setNewName("");
+    setNewNumber("");
   };
 
   const getFilteredNames = () => {
