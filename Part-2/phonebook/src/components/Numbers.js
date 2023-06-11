@@ -1,8 +1,8 @@
 const Number = ({ name, number, id, removePerson }) => {
   return (
-    <p>
+    <li>
       {name} {number} <button onClick={() => removePerson(id)}>Delete</button>
-    </p>
+    </li>
   );
 };
 
@@ -18,7 +18,7 @@ const Numbers = ({ persons, removePerson }) => {
       />
     );
   });
-  return <div>{personsToShow}</div>;
+  return <ul>{personsToShow}</ul>;
 };
 
 export default Numbers;
