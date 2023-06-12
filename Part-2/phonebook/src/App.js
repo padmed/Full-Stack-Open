@@ -6,22 +6,37 @@ import numbers from "./services/phoneNumbers";
 import Notification from "./components/Notification";
 
 const App = () => {
-  const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
-  const [filterStr, setFilterStr] = useState("");
+  const [persons, setPersons] = useState([]); //All person data
+  const [newName, setNewName] = useState(""); // Name input state
+  const [newNumber, setNewNumber] = useState(""); //Num input state
+  const [filterStr, setFilterStr] = useState(""); //Filter input state
   const [notificationMessage, setnotificationMessage] = useState(null);
+  const [requestSuccess, setRequestSuccess] = useState(null); //true if request is succ. false if it failed
 
   useEffect(() => {
     numbers.getAll().then((initialNums) => setPersons(initialNums));
   }, []);
+
+  //Whenever the requestSuccess state changes, showNotification method is triggered.
+  //Effect is used to notify user about success/failure of the communication with the server
+  useEffect(() => {
+    if (requestSuccess !== null) {
+      showNotification(newName);
+      setNewName("");
+      setNewNumber("");
+    }
+  }, [requestSuccess]);
 
   const handleInputChange = (setState) => (event) => {
     setState(event.target.value);
   };
 
   const showNotification = (personName) => {
-    setnotificationMessage(`Added ${personName}`);
+    //Show notification based on requestSuccess
+    const message = requestSuccess
+      ? `Added ${personName}`
+      : `Information of ${personName} has already been removed from the server`;
+    setnotificationMessage(message);
     setTimeout(() => {
       setnotificationMessage(null);
     }, 2000);
@@ -34,19 +49,25 @@ const App = () => {
     );
 
     if (confirmation)
-      numbers.put(personToReplace.id, newPersonObject).then((response) => {
-        setPersons([
-          ...persons.filter((x) => x.id !== personToReplace.id),
-          response.data,
-        ]);
-        showNotification(newPersonObject.name);
-      });
+      numbers
+        .put(personToReplace.id, newPersonObject)
+        .then((response) => {
+          setPersons([
+            ...persons.filter((x) => x.id !== personToReplace.id),
+            response.data,
+          ]);
+          setRequestSuccess(true); //request succeded
+        })
+        .catch((error) => {
+          setRequestSuccess(false); //request failed
+          setPersons(persons.filter((x) => x.name !== newPersonObject.name));
+        });
   };
 
   const addPersons = (newPersonObject) => {
     numbers.create(newPersonObject).then((newNum) => {
       setPersons([...persons, newNum]);
-      showNotification(newPersonObject.name);
+      setRequestSuccess(true); //request succeded
     });
   };
 
@@ -63,13 +84,11 @@ const App = () => {
     } else {
       replacePerson(newPersonObject);
     }
-
-    setNewName("");
-    setNewNumber("");
   };
 
   const getFilteredNames = () => {
     const filterNames = (person) => {
+      //compares every person data with the filter input bar data. if match - return
       const lowerCasePerson = person.name.toLowerCase();
       const lowerCaseFilter = filterStr.toLowerCase();
       return lowerCasePerson.includes(lowerCaseFilter);
@@ -83,15 +102,24 @@ const App = () => {
     const confirmation = window.confirm(`Delete ${person.name}?`);
 
     if (confirmation)
-      numbers.remove(id).then(() => {
-        setPersons(persons.filter((x) => x.id !== id));
-      });
+      numbers
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter((x) => x.id !== id));
+        })
+        .catch(() => {
+          setRequestSuccess(false); //request failed
+          setPersons(persons.filter((x) => x.id !== person.id));
+        });
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMessage} />
+      <Notification
+        message={notificationMessage}
+        requestSuccess={requestSuccess}
+      />
       <Filter
         value={filterStr}
         handleFilterStr={handleInputChange(setFilterStr)}
