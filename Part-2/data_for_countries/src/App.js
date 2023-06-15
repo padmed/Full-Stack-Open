@@ -17,7 +17,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (countries) {
+    if (countries && value !== "") {
       const matchedCountries = countries.filter((country) => {
         const commonName = country.name.common.toLowerCase();
         const officialName = country.name.official.toLowerCase();
