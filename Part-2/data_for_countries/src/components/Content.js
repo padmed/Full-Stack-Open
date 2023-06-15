@@ -1,17 +1,30 @@
 import CountryInfo from "./CountryInfo";
+import { useState } from "react";
 
 const Content = ({ countries }) => {
-  if (!countries) return null;
-  const numOfCountries = countries.length;
+  const [countryToShow, setCountryToShow] = useState(null);
 
-  const countryNames = countries.map((country) => {
-    return <li key={country.name.common}>{country.name.common}</li>;
+  if (!countries) return null;
+
+  const numOfCountries = countries.length;
+  const listCountries = countries.map((country) => {
+    return (
+      <li key={country.name.common}>
+        {country.name.common}{" "}
+        <button onClick={() => setCountryToShow(country)}>show</button>
+      </li>
+    );
   });
 
   if (numOfCountries === 1) {
     return <CountryInfo country={countries[0]} />;
   } else if (numOfCountries < 10) {
-    return <ul>{countryNames}</ul>;
+    return (
+      <>
+        <ul>{listCountries}</ul>
+        <CountryInfo country={countryToShow} />
+      </>
+    );
   } else {
     return <p>Too many matches, specify another filter</p>;
   }

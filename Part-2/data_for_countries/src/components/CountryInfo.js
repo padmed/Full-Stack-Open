@@ -1,4 +1,5 @@
 const CountryInfo = ({ country }) => {
+  if (!country) return;
   const languages = Object.values(country.languages).map((language) => (
     <li key={language}> {language}</li>
   ));
