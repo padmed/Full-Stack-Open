@@ -1,9 +1,12 @@
 const CountryInfo = ({ country }) => {
   if (!country) return;
+
+  //Converts country languages object into list
   const languages = Object.values(country.languages).map((language) => (
     <li key={language}> {language}</li>
   ));
 
+  //Enlarges size of the flag
   const imgStyle = {
     width: "10%",
   };
