@@ -13,7 +13,6 @@ const App = () => {
   const [notificationMessage, setnotificationMessage] = useState(null);
   const [requestSuccess, setRequestSuccess] = useState(null); //true if request is succ. false if it failed
 
-  console.log(requestSuccess);
   useEffect(() => {
     numbers.getAll().then((initialNums) => setPersons(initialNums));
   }, []);
