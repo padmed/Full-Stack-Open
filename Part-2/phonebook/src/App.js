@@ -10,7 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState(""); // Name input state
   const [newNumber, setNewNumber] = useState(""); //Num input state
   const [filterStr, setFilterStr] = useState(""); //Filter input state
-  const [notificationMessage, setnotificationMessage] = useState(null);
+  const [notificationMessage, setNotificationMessage] = useState(null);
   const [requestSuccess, setRequestSuccess] = useState(null); //true if request is succ. false if it failed
 
   useEffect(() => {
@@ -24,6 +24,12 @@ const App = () => {
       showNotification(newName);
       setNewName("");
       setNewNumber("");
+
+      //Restarts notification to its ground state
+      setTimeout(() => {
+        setNotificationMessage(null);
+        setRequestSuccess(null);
+      }, 2000);
     }
   }, [requestSuccess]);
 
@@ -33,14 +39,13 @@ const App = () => {
 
   const showNotification = (personName) => {
     //Show notification based on requestSuccess
-    const message = requestSuccess
-      ? `Added ${personName}`
-      : `Information of ${personName} has already been removed from the server`;
-    setnotificationMessage(message);
-    setTimeout(() => {
-      setnotificationMessage(null);
-      setRequestSuccess(null);
-    }, 2000);
+    let message;
+    if (!notificationMessage) {
+      message = requestSuccess
+        ? `Added ${personName}`
+        : `Information of ${personName} has already been removed from the server`;
+      setNotificationMessage(message);
+    }
   };
 
   const replacePerson = (newPersonObject) => {
@@ -61,15 +66,23 @@ const App = () => {
         })
         .catch((error) => {
           setRequestSuccess(false); //request failed
+          setNotificationMessage(error.response.data.errorMessage);
           setPersons(persons.filter((x) => x.name !== newPersonObject.name));
         });
   };
 
   const addPersons = (newPersonObject) => {
-    numbers.create(newPersonObject).then((newNum) => {
-      setPersons([...persons, newNum]);
-      setRequestSuccess(true); //request succeded
-    });
+    numbers
+      .create(newPersonObject)
+      .then((newNum) => {
+        setPersons([...persons, newNum]);
+        setRequestSuccess(true); //request succeded
+      })
+      .catch((e) => {
+        //Set notification message and request success to failure, and trigger useEffect to show the notification
+        setNotificationMessage(e.response.data.errorMessage);
+        setRequestSuccess(false);
+      });
   };
 
   const handleSetPersons = (event) => {
