@@ -41,9 +41,7 @@ const App = () => {
     //Show notification based on requestSuccess
     let message;
     if (!notificationMessage) {
-      message = requestSuccess
-        ? `Added ${personName}`
-        : `Information of ${personName} has already been removed from the server`;
+      message = requestSuccess ? `Added ${personName}` : `Please fill the form`;
       setNotificationMessage(message);
     }
   };
@@ -67,7 +65,6 @@ const App = () => {
         .catch((error) => {
           setRequestSuccess(false); //request failed
           setNotificationMessage(error.response.data.errorMessage);
-          setPersons(persons.filter((x) => x.name !== newPersonObject.name));
         });
   };
 
