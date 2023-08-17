@@ -6,7 +6,7 @@ describe("filterReducer", () => {
     const initialState = "";
     deepFreeze(initialState);
 
-    const action = { type: "FILTER", payload: "filter" };
+    const action = { type: "filter/filterSearch", payload: "filter" };
     const updatedFilter = filterReducer(initialState, action);
 
     expect(updatedFilter).toBe("filter");
