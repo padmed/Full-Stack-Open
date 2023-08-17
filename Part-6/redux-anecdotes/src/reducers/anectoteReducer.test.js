@@ -6,22 +6,16 @@ describe("anecdoteReducer", () => {
     const initialState = [];
     deepFreeze(initialState);
 
-    const newAnecdote = {
-      content: "anecdote 1",
-      id: 1,
-      votes: 0,
-    };
+    const newAnecdote = "anecdote 1";
 
     const action = {
-      type: "NEW_ANECDOTE",
-      payload: {
-        newAnecdote,
-      },
+      type: "anecdotes/newAnecdote",
+      payload: newAnecdote,
     };
 
     const updatedState = reducer(initialState, action);
     expect(updatedState).toHaveLength(1);
-    expect(updatedState).toContainEqual(newAnecdote);
+    expect(updatedState[0].content).toBe(newAnecdote);
   });
 
   test("should increment number of likes on like", () => {
@@ -41,7 +35,7 @@ describe("anecdoteReducer", () => {
     deepFreeze(initialState);
 
     const action = {
-      type: "VOTE",
+      type: "anecdotes/voteUp",
       payload: {
         id: initialState[1].id,
       },
