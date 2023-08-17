@@ -36,9 +36,7 @@ describe("anecdoteReducer", () => {
 
     const action = {
       type: "anecdotes/voteUp",
-      payload: {
-        id: initialState[1].id,
-      },
+      payload: initialState[1].id,
     };
 
     const updatedState = reducer(initialState, action);
