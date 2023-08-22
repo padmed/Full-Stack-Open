@@ -1,14 +1,26 @@
 import { useSelector } from "react-redux";
-import { writeNotification } from "../reducers/notificationReducer.js";
+import { hideNotification } from "../reducers/notificationReducer.js";
 import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 
 const Notification = () => {
+  const [timeoutId, setTimeoutId] = useState(null);
   const dispatch = useDispatch();
   const notification = useSelector((state) => state.notification);
 
-  setTimeout(() => {
-    dispatch(writeNotification(""));
-  }, 5000);
+  const removeNotification = () => {
+    const id = setTimeout(() => {
+      dispatch(hideNotification());
+    }, 5000);
+    setTimeoutId(id);
+  };
+
+  useEffect(() => {
+    if (notification !== "") {
+      clearTimeout(timeoutId);
+      removeNotification();
+    }
+  }, [notification]);
 
   const style = {
     border: "solid",
