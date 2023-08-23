@@ -19,12 +19,13 @@ const asObject = (anecdote) => {
   };
 };
 
-const initialState = anecdotesAtStart.map(asObject);
-
 const anecdotesSlice = createSlice({
   name: "anecdotes",
-  initialState,
+  initialState: [],
   reducers: {
+    setAnecdotes(state, action) {
+      return [...state, ...action.payload];
+    },
     voteUp(state, action) {
       const anecdoteToVote = state.find((a) => a.id === action.payload);
       const votedAnecdote = {
@@ -35,11 +36,10 @@ const anecdotesSlice = createSlice({
       return state.map((a) => (a.id === action.payload ? votedAnecdote : a));
     },
     newAnecdote(state, action) {
-      console.log(action.payload);
       return [...state, asObject(action.payload)];
     },
   },
 });
 
 export default anecdotesSlice.reducer;
-export const { voteUp, newAnecdote } = anecdotesSlice.actions;
+export const { voteUp, newAnecdote, setAnecdotes } = anecdotesSlice.actions;
