@@ -16,3 +16,9 @@ export const createNew = async (content) => {
   const response = await axios.post(baseUrl, object);
   return response.data;
 };
+
+export const update = async (anecdoteObj) => {
+  const id = anecdoteObj.id;
+  const response = await axios.put(`${baseUrl}/${id}`, anecdoteObj);
+  return response.data;
+};
