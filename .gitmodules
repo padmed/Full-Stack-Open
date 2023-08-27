@@ -1,0 +1,3 @@
+[submodule "Part-6/query-anecdotes"]
+	path = Part-6/query-anecdotes
+	url = https://github.com/padmed/query-anecdotes
