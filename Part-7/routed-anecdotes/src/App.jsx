@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import Menu from "./components/Menu";
 import AnecdoteList from "./components/AnecdoteList";
@@ -26,15 +27,23 @@ const App = () => {
   ]);
 
   const [notification, setNotification] = useState("");
-
   const match = useMatch("/anecdotes/:id");
+
   const anecdoteToShow = match
     ? anecdotes.find((n) => n.id === Number(match.params.id))
     : null;
 
+  const showNotification = (anecdote) => {
+    setNotification(`A new anecdote "${anecdote}" is added`);
+    setTimeout(() => {
+      setNotification("");
+    }, 5000);
+  };
+
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000);
     setAnecdotes(anecdotes.concat(anecdote));
+    showNotification(anecdote.content);
   };
 
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
@@ -54,6 +63,7 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      {notification === "" ? null : notification}
       <Routes>
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route
@@ -63,7 +73,6 @@ const App = () => {
         <Route path="/create" element={<CreateNew addNew={addNew} />} />
         <Route path="/about" element={<About />} />
       </Routes>
-
       <Footer />
     </div>
   );
