@@ -11,12 +11,25 @@ const CreateNew = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0,
     });
     navigate("/");
+  };
+
+  const resetForm = () => {
+    console.log({ ...content });
+    content.reset();
+    author.reset();
+    info.reset();
+  };
+
+  const filterFieldProps = (field) => {
+    // eslint-disable-next-line no-unused-vars
+    const { reset, ...filteredProps } = field;
+    return filteredProps;
   };
 
   return (
@@ -25,17 +38,20 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input {...content} />
+          <input {...filterFieldProps(content)} />
         </div>
         <div>
           author
-          <input {...author} />
+          <input {...filterFieldProps(author)} />
         </div>
         <div>
           url for more info
-          <input {...info} />
+          <input {...filterFieldProps(info)} />
         </div>
         <button>create</button>
+        <button type="reset" onClick={resetForm}>
+          reset
+        </button>
       </form>
     </div>
   );
