@@ -128,6 +128,11 @@ const typeDefs = `
       author: String!
       genres: [String!]!
       ) : Book!
+
+    editAuthor(
+      name: String!
+      setBornTo: Int!
+      ) : Author
   }
 `
 
@@ -173,6 +178,21 @@ const resolvers = {
       const newBook = {...args, id: uuid()}
       books = [...books, newBook]
       return newBook
+    },
+
+    editAuthor: (root, args) => {
+      let authorFound = null;
+      
+      authors = authors.map((author) => {
+        if (author.name === args.name) {
+          author["born"] = args.setBornTo
+          authorFound = author
+        }
+        return author
+      })
+
+
+      return authorFound
     }
   },
 
