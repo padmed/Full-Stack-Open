@@ -33,7 +33,7 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <SetAuthorBirth />
+      <SetAuthorBirth authors={authors} />
     </div>
   );
 };

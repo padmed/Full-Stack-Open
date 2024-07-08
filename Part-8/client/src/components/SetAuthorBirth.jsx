@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { EDIT_AUTHOR } from "../gql/actions";
 
-const SetAuthorBirth = () => {
+const SetAuthorBirth = ({ authors }) => {
   const [name, setName] = useState("");
   const [born, setBorn] = useState("");
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
@@ -23,10 +23,13 @@ const SetAuthorBirth = () => {
       <form onSubmit={submit}>
         <div>
           name:{" "}
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-          ></input>
+          <select onChange={({ target }) => setName(target.value)}>
+            {authors.map((author) => (
+              <option key={author.id} value={author.name}>
+                {author.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           born:{" "}
