@@ -24,7 +24,7 @@ const typeDefs = `
   type Mutation {
     addBook(
       title: String!
-      published: Int!
+      published: String!
       author: String!
       genres: [String!]!
       ) : Book!
@@ -34,5 +34,5 @@ const typeDefs = `
       setBornTo: Int!
       ) : Author
   }
-`
-module.exports = typeDefs
+`;
+module.exports = typeDefs;
