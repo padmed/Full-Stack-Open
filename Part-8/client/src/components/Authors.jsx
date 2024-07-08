@@ -1,8 +1,18 @@
+import { useQuery } from "@apollo/client";
+import { GET_ALL_AUTHORS } from "../gql/actions";
+
 const Authors = (props) => {
   if (!props.show) {
     return null;
   }
-  const authors = [];
+
+  const { loading, data } = useQuery(GET_ALL_AUTHORS);
+
+  if (loading && !data) {
+    return <h2>Loading...</h2>;
+  }
+
+  const authors = data.allAuthors;
 
   return (
     <div>
