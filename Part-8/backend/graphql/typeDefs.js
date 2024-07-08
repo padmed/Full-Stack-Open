@@ -10,7 +10,7 @@ const typeDefs = `
   type Author {
     name: String!
     id: ID!
-    born: Int
+    born: String
     bookCount: Int!
   }
 
@@ -31,7 +31,7 @@ const typeDefs = `
 
     editAuthor(
       name: String!
-      setBornTo: Int!
+      setBornTo: String!
       ) : Author
   }
 `;
