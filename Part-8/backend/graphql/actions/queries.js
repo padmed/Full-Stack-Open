@@ -1,29 +1,18 @@
 books = require("../../data/books");
 authors = require("../../data/authors");
+const Author = require("../../models/authorSchema");
+const Book = require("../../models/bookSchema");
 
-const bookCount = () => books.length;
-const authorCount = () => authors.length;
-const allBooks = (root, args) => {
-  if (!args.author && !args.genre) {
-    return books;
-  }
+const bookCount = async () => (await Book.find({})).length;
+const authorCount = async () => (await Author.find({})).length;
 
-  const filteredBooks = books.filter((book) => {
-    const checkAuthor = args.author === book.author;
-    const checkGenre = book.genres.includes(args.genre);
-
-    if (args.author && args.genre) {
-      return checkAuthor && checkGenre;
-    } else if (args.author) {
-      return checkAuthor;
-    } else if (args.genre) {
-      return checkGenre;
-    }
-  });
-
-  return filteredBooks;
+const allBooks = async (root, { genre }) => {
+  const query = genre ? { genres: genre } : {};
+  return (await Book.find(query).populate("author")) || [];
 };
-const allAuthors = () => authors;
+
+const allAuthors = async () => await Author.find({});
+
 const bookCountAuthor = (root, args) =>
   books.filter((book) => book.author === root.name).length;
 

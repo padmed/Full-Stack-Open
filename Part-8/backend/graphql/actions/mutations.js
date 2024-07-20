@@ -1,6 +1,3 @@
-const { v1: uuid } = require("uuid");
-books = require("../../data/books");
-authors = require("../../data/authors");
 const Book = require("../../models/bookSchema");
 const Author = require("../../models/authorSchema");
 const { GraphQLError } = require("graphql");
@@ -33,18 +30,30 @@ const addBook = async (root, args) => {
   return newBook;
 };
 
-const editAuthor = (root, args) => {
-  let authorFound = null;
+const editAuthor = async (root, args) => {
+  try {
+    let author = await Author.findOne({ name: args.name });
 
-  authors = authors.map((author) => {
-    if (author.name === args.name) {
-      author["born"] = args.setBornTo;
-      authorFound = author;
+    if (!author) {
+      throw new GraphQLError("Author not found", {
+        extensions: {
+          code: "BAD_USER_INPUT",
+        },
+      });
     }
-    return author;
-  });
 
-  return authorFound;
+    author.born = args.setBornTo;
+    await author.save();
+
+    return author;
+  } catch (error) {
+    throw new GraphQLError("Failed to edit author", {
+      extensions: {
+        code: "BAD_USER_INPUT",
+        message: error.message || error,
+      },
+    });
+  }
 };
 
 module.exports = { addBook, editAuthor };
