@@ -1,7 +1,10 @@
 const Book = require("../../models/bookSchema");
 const Author = require("../../models/authorSchema");
+const User = require("../../models/userSchema");
 const { GraphQLError } = require("graphql");
+const jwt = require("jsonwebtoken");
 
+// Helpers
 const findOrAddAuthor = async (authorName) => {
   let author = await Author.findOne({ name: authorName });
   if (!author) {
@@ -11,7 +14,17 @@ const findOrAddAuthor = async (authorName) => {
   return author;
 };
 
-const addBook = async (root, args) => {
+const checkAuth = (user) => {
+  if (!user) {
+    throw new GraphQLError("Not Authenticated", {
+      extensions: { code: "BAD_AUTH" },
+    });
+  }
+};
+
+// Mutations
+const addBook = async (root, args, { currentUser }) => {
+  checkAuth(currentUser);
   const author = await findOrAddAuthor(args.author);
   const newBook = new Book({ ...args, author: author._id });
 
@@ -30,7 +43,8 @@ const addBook = async (root, args) => {
   return newBook;
 };
 
-const editAuthor = async (root, args) => {
+const editAuthor = async (root, args, { currentUser }) => {
+  checkAuth(currentUser);
   try {
     let author = await Author.findOne({ name: args.name });
 
@@ -56,4 +70,36 @@ const editAuthor = async (root, args) => {
   }
 };
 
-module.exports = { addBook, editAuthor };
+const createUser = async (root, { username, favoriteGenre }) => {
+  try {
+    const user = new User({ username, favoriteGenre });
+    return await user.save();
+  } catch (error) {
+    throw new GraphQLError("Error creating a new user", {
+      extensions: {
+        message: error.message || error,
+      },
+    });
+  }
+};
+
+const login = async (root, { username, password }) => {
+  const user = await User.findOne({ username });
+
+  if (!user || password !== "secret") {
+    throw new GraphQLError("Couldn't log in", {
+      extensions: {
+        code: "BAD_USER_INPUT",
+      },
+    });
+  }
+
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  };
+
+  return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
+};
+
+module.exports = { addBook, editAuthor, createUser, login };

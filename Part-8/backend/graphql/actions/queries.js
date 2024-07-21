@@ -16,10 +16,12 @@ const allAuthors = async () => await Author.find({});
 const bookCountAuthor = (root, args) =>
   books.filter((book) => book.author === root.name).length;
 
+const me = (root, args, { currentUser }) => currentUser;
 module.exports = {
   bookCount,
   authorCount,
   allBooks,
   allAuthors,
   bookCountAuthor,
+  me,
 };
