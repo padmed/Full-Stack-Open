@@ -40,7 +40,7 @@ const addBook = async (root, args, { currentUser }) => {
     });
   }
 
-  return newBook;
+  return newBook.populate("author");
 };
 
 const editAuthor = async (root, args, { currentUser }) => {
