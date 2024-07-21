@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useMutation } from "@apollo/client";
-import { EDIT_AUTHOR } from "../gql/actions";
+import { useMutation, useQuery } from "@apollo/client";
+import { EDIT_AUTHOR, GET_ALL_AUTHORS } from "../gql/actions";
 
-const SetAuthorBirth = ({ authors }) => {
+const SetAuthorBirth = ({ show }) => {
   const [name, setName] = useState("");
   const [born, setBorn] = useState("");
+  const { loading, data } = useQuery(GET_ALL_AUTHORS);
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     variables: { name, setBornTo: born },
   });
@@ -17,6 +18,11 @@ const SetAuthorBirth = ({ authors }) => {
     setBorn("");
   };
 
+  const authors = data ? data.allAuthors : [];
+
+  if (!show) {
+    return null;
+  }
   return (
     <>
       <h2>Set birthyear</h2>

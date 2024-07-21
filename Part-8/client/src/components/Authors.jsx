@@ -1,6 +1,5 @@
 import { useQuery } from "@apollo/client";
 import { GET_ALL_AUTHORS } from "../gql/actions";
-import SetAuthorBirth from "./SetAuthorBirth";
 
 const Authors = (props) => {
   const { loading, data } = useQuery(GET_ALL_AUTHORS);
@@ -33,7 +32,6 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <SetAuthorBirth authors={authors} />
     </div>
   );
 };
