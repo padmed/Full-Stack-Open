@@ -7,9 +7,6 @@ const Authors = (props) => {
   if (!props.show) {
     return null;
   }
-  if (loading && !data) {
-    return <h2>Loading...</h2>;
-  }
 
   const authors = data ? data.allAuthors : [];
 
