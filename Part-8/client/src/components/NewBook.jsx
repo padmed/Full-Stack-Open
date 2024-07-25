@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
-import { ADD_NEW_BOOK, GET_ALL_AUTHORS, GET_ALL_BOOKS } from "../gql/actions";
+import {
+  ADD_NEW_BOOK,
+  GET_ALL_AUTHORS,
+  GET_ALL_BOOKS,
+  GET_GENRES,
+} from "../gql/actions";
 
 const NewBook = (props) => {
   const [title, setTitle] = useState("");
@@ -18,7 +23,8 @@ const NewBook = (props) => {
       {
         query: GET_ALL_AUTHORS,
       },
-      { query: GET_ALL_BOOKS },
+      { query: GET_ALL_BOOKS, variables: { genre: "" } },
+      { query: GET_GENRES },
     ],
   });
 

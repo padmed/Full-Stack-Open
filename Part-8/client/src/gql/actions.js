@@ -82,3 +82,11 @@ export const CURRENT_USER = gql`
     }
   }
 `;
+
+export const GET_GENRES = gql`
+  query {
+    allBooks {
+      genres
+    }
+  }
+`;

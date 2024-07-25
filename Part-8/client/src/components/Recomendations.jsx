@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 const Recomendations = ({ show }) => {
   const currentUser = useQuery(CURRENT_USER);
-  const [favoriteGenre, setFavoriteGenre] = useState(null);
+  const [favoriteGenre, setFavoriteGenre] = useState("");
 
   useEffect(() => {
     if (currentUser.data && !currentUser.loading) {
@@ -14,11 +14,18 @@ const Recomendations = ({ show }) => {
 
   const recommendations = useQuery(GET_ALL_BOOKS, {
     variables: { genre: favoriteGenre },
-    skip: !favoriteGenre,
+    skip: favoriteGenre === "",
+    onError: (e) => {
+      console.log(e.message);
+    },
   });
 
   if (!show) {
     return null;
+  }
+
+  if (currentUser.loading || recommendations.loading) {
+    return <h3>...loading</h3>;
   }
 
   return (
