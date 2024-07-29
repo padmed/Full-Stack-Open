@@ -1,11 +1,24 @@
 const { ApolloServer } = require("@apollo/server");
-const { startStandaloneServer } = require("@apollo/server/standalone");
+const { WebSocketServer } = require("ws");
+const http = require("http");
+const {
+  ApolloServerPluginDrainHttpServer,
+} = require("@apollo/server/plugin/drainHttpServer");
+const { useServer } = require("graphql-ws/lib/use/ws");
+const express = require("express");
+const { expressMiddleware } = require("@apollo/server/express4");
+
+const mongoose = require("mongoose");
+const User = require("./models/userSchema");
+
 const typeDefs = require("./graphql/typeDefs");
 const resolvers = require("./graphql/resolvers");
-const mongoose = require("mongoose");
+
 const { GraphQLError } = require("graphql");
 const jwt = require("jsonwebtoken");
-const User = require("./models/userSchema");
+const cors = require("cors");
+const { makeExecutableSchema } = require("@graphql-tools/schema");
+
 require("dotenv").config();
 
 mongoose.set("strictQuery", false);
@@ -16,36 +29,72 @@ mongoose
   })
   .catch((e) => console.log("Couldn't connect to db", e.message));
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
+const start = async () => {
+  const app = express();
+  const httpServer = http.createServer(app);
 
-startStandaloneServer(server, {
-  listen: { port: 4000 },
-  context: async ({ req, res }) => {
-    const auth = req ? req.headers.authorization : null;
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: "/",
+  });
 
-    if (auth && auth.startsWith("Bearer ")) {
-      try {
-        const decodedToken = jwt.verify(
-          auth.substring(7),
-          process.env.JWT_SECRET
-        );
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
+  const serverCleanup = useServer({ schema }, wsServer);
 
-        const currentUser = await User.findById(decodedToken.id);
+  const server = new ApolloServer({
+    schema,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      },
+    ],
+  });
 
-        return { currentUser };
-      } catch (error) {
-        throw new GraphQLError("Invalid token", {
-          extensions: {
-            code: "BAD AUTH",
-            message: error.message || error,
-          },
-        });
-      }
-    }
-  },
-}).then(({ url }) => {
-  console.log(`Server ready at ${url}`);
-});
+  await server.start();
+
+  app.use(
+    "/",
+    cors(),
+    express.json(),
+    expressMiddleware(server, {
+      context: async ({ req, res }) => {
+        const auth = req ? req.headers.authorization : null;
+
+        if (auth && auth.startsWith("Bearer ")) {
+          try {
+            const decodedToken = jwt.verify(
+              auth.substring(7),
+              process.env.JWT_SECRET
+            );
+
+            const currentUser = await User.findById(decodedToken.id);
+
+            return { currentUser };
+          } catch (error) {
+            throw new GraphQLError("Invalid token", {
+              extensions: {
+                code: "BAD AUTH",
+                message: error.message || error,
+              },
+            });
+          }
+        }
+      },
+    })
+  );
+
+  const PORT = 4000;
+
+  httpServer.listen(PORT, () =>
+    console.log(`Server is now running on http://localhost:${PORT}`)
+  );
+};
+
+start();

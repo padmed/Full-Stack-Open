@@ -1,5 +1,6 @@
 const queries = require("./actions/queries");
 const mutations = require("./actions/mutations");
+const subscriptions = require("./actions/subscriptions");
 
 const resolvers = {
   Query: {
@@ -15,6 +16,12 @@ const resolvers = {
     editAuthor: mutations.editAuthor,
     createUser: mutations.createUser,
     login: mutations.login,
+  },
+
+  Subscription: {
+    bookAdded: {
+      subscribe: () => subscriptions.bookAdded(),
+    },
   },
 
   Author: {

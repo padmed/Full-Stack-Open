@@ -3,6 +3,7 @@ const Author = require("../../models/authorSchema");
 const User = require("../../models/userSchema");
 const { GraphQLError } = require("graphql");
 const jwt = require("jsonwebtoken");
+const { pubSub } = require("./subscriptions");
 
 // Helpers
 const findOrAddAuthor = async (authorName) => {
@@ -40,6 +41,7 @@ const addBook = async (root, args, { currentUser }) => {
     });
   }
 
+  pubSub.publish("BOOK_ADDED", { bookAdded: newBook.populate("author") });
   return newBook.populate("author");
 };
 
