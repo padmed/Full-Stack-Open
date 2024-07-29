@@ -4,8 +4,9 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
 import SetAuthorBirth from "./components/SetAuthorBirth";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient, useSubscription } from "@apollo/client";
 import Recomendations from "./components/Recomendations";
+import { BOOK_ADDED } from "./gql/actions";
 
 const App = () => {
   const [token, setToken] = useState(null);
@@ -17,6 +18,12 @@ const App = () => {
     localStorage.clear();
     client.clearStore();
   };
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      window.alert(data.data.bookAdded.title);
+    },
+  });
 
   useEffect(() => {
     const tokenExists = localStorage.getItem("user-login-token");
