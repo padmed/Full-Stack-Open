@@ -1,5 +1,3 @@
-books = require("../../data/books");
-authors = require("../../data/authors");
 const Author = require("../../models/authorSchema");
 const Book = require("../../models/bookSchema");
 
@@ -11,10 +9,11 @@ const allBooks = async (root, { genre }) => {
   return (await Book.find(query).populate("author")) || [];
 };
 
-const allAuthors = async () => await Author.find({});
-
-const bookCountAuthor = (root, args) =>
-  books.filter((book) => book.author === root.name).length;
+const allAuthors = async () => {
+  const authors = await Author.find({});
+  authors.bookCount = authors.bookCount;
+  return authors;
+};
 
 const me = (root, args, { currentUser }) => currentUser;
 module.exports = {
@@ -22,6 +21,6 @@ module.exports = {
   authorCount,
   allBooks,
   allAuthors,
-  bookCountAuthor,
+
   me,
 };

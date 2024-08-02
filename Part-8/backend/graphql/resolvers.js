@@ -23,10 +23,6 @@ const resolvers = {
       subscribe: () => subscriptions.bookAdded(),
     },
   },
-
-  Author: {
-    bookCount: queries.bookCountAuthor,
-  },
 };
 
 module.exports = resolvers;

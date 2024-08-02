@@ -30,6 +30,7 @@ const addBook = async (root, args, { currentUser }) => {
   const newBook = new Book({ ...args, author: author._id });
 
   try {
+    author.bookCount += 1;
     await newBook.save();
     await author.save();
   } catch (error) {
