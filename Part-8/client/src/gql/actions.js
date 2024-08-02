@@ -100,10 +100,10 @@ export const BOOK_ADDED = gql`
         bookCount
         born
       }
-      genres
-      id
       published
       title
+      id
+      genres
     }
   }
 `;

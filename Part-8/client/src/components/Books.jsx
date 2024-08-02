@@ -1,6 +1,7 @@
-import { useQuery } from "@apollo/client";
-import { GET_ALL_BOOKS } from "../gql/actions";
+import { useQuery, useSubscription } from "@apollo/client";
+import { GET_ALL_BOOKS, BOOK_ADDED } from "../gql/actions";
 import { useEffect, useState } from "react";
+
 import Genres from "./Genres";
 
 const Books = (props) => {
@@ -8,6 +9,19 @@ const Books = (props) => {
   const [genreFilter, setGenreFilter] = useState("");
   const { loading, data } = useQuery(GET_ALL_BOOKS, {
     variables: { genre: genreFilter },
+  });
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      client.cache.updateQuery(
+        { query: GET_ALL_BOOKS, variables: { genre: "" } },
+        ({ allBooks }) => {
+          return {
+            allBooks: [...allBooks, data.data.bookAdded],
+          };
+        }
+      );
+    },
   });
 
   useEffect(() => {
