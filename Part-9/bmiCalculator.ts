@@ -41,3 +41,5 @@ try {
     console.log(error.message);
   }
 }
+
+export default calculateBmi;
