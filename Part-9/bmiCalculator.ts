@@ -1,3 +1,5 @@
+import { isNumber } from "./helpers";
+
 interface argsTypes {
   weight: number;
   height: number;
@@ -7,7 +9,7 @@ const parseArguments = (args: string[]): argsTypes => {
   if (args.length > 4) throw new Error("Too many arguments");
   if (args.length < 4) throw new Error("argument's missing");
 
-  if (isNaN(Number(args[2])) || isNaN(Number(args[3]))) {
+  if (!isNumber(args[2]) || !isNumber(args[3])) {
     console.log(args[3]);
     throw new Error("Argument is not a number");
   }

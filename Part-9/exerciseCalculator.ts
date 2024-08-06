@@ -8,30 +8,30 @@ interface CalculatedValues {
   average: number;
 }
 
-interface exerciseArguments {
-  target: number;
-  progress: number[];
-}
+// interface exerciseArguments {
+//   target: number;
+//   progress: number[];
+// }
 
-const parseArgumentsForExercises = (
-  args: string[] | number[]
-): exerciseArguments => {
-  if (args.length < 3) throw new Error("arguments not provided");
+// const parseArgumentsForExercises = (
+//   args: string[] | number[]
+// ): exerciseArguments => {
+//   if (args.length < 3) throw new Error("arguments not provided");
 
-  let passedArguments = args.slice(2);
+//   let passedArguments = args.slice(2);
 
-  passedArguments = passedArguments.map((argument) => {
-    if (isNaN(Number(argument))) {
-      throw new Error("argument passed is not a number");
-    }
-    return Number(argument);
-  });
+//   passedArguments = passedArguments.map((argument) => {
+//     if (isNaN(Number(argument))) {
+//       throw new Error("argument passed is not a number");
+//     }
+//     return Number(argument);
+//   });
 
-  const target = passedArguments[0];
-  const progress = passedArguments.slice(1);
+//   const target = passedArguments[0];
+//   const progress = passedArguments.slice(1);
 
-  return { target, progress };
-};
+//   return { target, progress };
+// };
 
 const calculateExercises = (
   target: number,
@@ -69,11 +69,13 @@ const calculateExercises = (
   };
 };
 
-try {
-  const { target, progress } = parseArgumentsForExercises(process.argv);
-  console.log(calculateExercises(target, progress));
-} catch (error: unknown) {
-  if (error instanceof Error) {
-    console.log(error.message);
-  }
-}
+// try {
+//   const { target, progress } = parseArgumentsForExercises(process.argv);
+//   console.log(calculateExercises(target, progress));
+// } catch (error: unknown) {
+//   if (error instanceof Error) {
+//     console.log(error.message);
+//   }
+// }
+
+export default calculateExercises;
