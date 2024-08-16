@@ -54,3 +54,7 @@ app.post("/exercises", (req, res) => {
   // Send the result as response
   return res.send({ result });
 });
+
+app.listen(3003, () => {
+  console.log("connected to a server");
+});
